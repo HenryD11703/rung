@@ -67,6 +67,13 @@ function hitMemory(key: string, rule: RateLimitRule, now: number): RateLimitResu
 // Optional shared store through Upstash Redis' REST API (no extra dependency).
 // Enabled when UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are set.
 // ---------------------------------------------------------------------------
+let warnedAboutUpstash = false;
+function warnUpstash(reason: string) {
+  if (warnedAboutUpstash) return;
+  warnedAboutUpstash = true;
+  console.error(`[review] Upstash unavailable (${reason}); using the in-memory rate limit.`);
+}
+
 async function hitUpstash(
   key: string,
   rule: RateLimitRule,
@@ -84,19 +91,26 @@ async function hitUpstash(
         ["EXPIRE", key, rule.windowSeconds, "NX"],
         ["TTL", key],
       ]),
-      signal: AbortSignal.timeout(1_500),
+      signal: AbortSignal.timeout(3_000),
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      warnUpstash(`HTTP ${response.status}`);
+      return null;
+    }
 
     const [incr, , ttl] = (await response.json()) as { result: number }[];
-    if (typeof incr?.result !== "number") return null;
+    if (typeof incr?.result !== "number") {
+      warnUpstash("unexpected response");
+      return null;
+    }
 
     return {
       allowed: incr.result <= rule.limit,
       remaining: Math.max(0, rule.limit - incr.result),
       retryAfterSeconds: Math.max(1, ttl?.result ?? rule.windowSeconds),
     };
-  } catch {
+  } catch (error) {
+    warnUpstash(error instanceof Error ? error.name : "error");
     return null; // fall back to memory instead of failing open or closed
   }
 }

@@ -1,6 +1,6 @@
 # CLAUDE.md — technical guide for this repo
 
-React practice platform: 12 exercises, in-browser editor (Sandpack), **automated checks decide pass/fail**, an AI mentor only explains. Product name: **Rung** (formerly "Junior to Mid"; chosen by the author). The GitHub repo is still `learn_react_j2m` until the author renames it.
+React practice platform: 12 exercises, in-browser editor (Sandpack), **automated checks decide pass/fail**, an AI mentor only explains. Product name: **Rung** (formerly "Junior to Mid"; chosen by the author). The GitHub repo is `HenryD11703/rung` (renamed from `learn_react_j2m`; old URLs redirect).
 
 Context about the author and the bigger project lives outside this repo, in `henry-b/ESTADO-ACTUAL.md`. Chat with the author is in Spanish; everything in this repo (UI, code, docs, commits) is **English**.
 
@@ -73,4 +73,4 @@ Sandpack file paths use a **leading slash** (`/App.js`). Check helpers match fil
 
 ## Status
 
-Work lives on branch `feat/revamp` (3 commits ahead of `main`, **not pushed**). Pushing and opening the PR is the author's decision.
+Released as `v1.0.0` on `main`. Day-to-day work goes on short-lived branches (`feat/...`, `fix/...`) merged into `main`.

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Brand } from "./Brand";
 import { ProgressBadge } from "./ProgressBadge";
 
-export const REPO_URL = "https://github.com/HenryD11703/learn_react_j2m";
+export const REPO_URL = "https://github.com/HenryD11703/rung";
 
 export function SiteHeader({ total }: { total: number }) {
   return (

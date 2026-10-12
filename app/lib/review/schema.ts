@@ -33,8 +33,16 @@ const text = (max: number) =>
 /** What the model must return. Anything else is rejected. */
 export const FeedbackSchema = z.object({
   summary: text(280),
-  strengths: z.array(text(300)).max(3).default([]),
-  fixes: z.array(text(420)).max(3).default([]),
+  // Models sometimes list more than asked. Keep the first three instead of
+  // throwing away an otherwise good review.
+  strengths: z
+    .array(text(300))
+    .transform((items) => items.slice(0, 3))
+    .default([]),
+  fixes: z
+    .array(text(420))
+    .transform((items) => items.slice(0, 3))
+    .default([]),
   nextStep: z.string().transform((v) => v.trim().slice(0, 280)).default(""),
 });
 

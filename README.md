@@ -48,8 +48,8 @@ What makes it different from a tutorial site is how the feedback works:
 Requires Node.js 20 or newer.
 
 ```bash
-git clone https://github.com/HenryD11703/learn_react_j2m.git
-cd learn_react_j2m
+git clone https://github.com/HenryD11703/rung.git
+cd rung
 npm install
 cp .env.example .env     # then add your GROQ_API_KEY
 npm run dev

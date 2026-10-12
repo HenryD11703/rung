@@ -249,6 +249,21 @@ describe("POST /api/review: upstream failures", () => {
     expect((await res.json()).error.code).toBe("unavailable");
   });
 
+  it("keeps the first three items when the model lists too many", async () => {
+    mockedComplete.mockResolvedValue(
+      JSON.stringify({
+        summary: "ok",
+        strengths: ["a", "b", "c", "d"],
+        fixes: ["1", "2", "3", "4", "5", "6"],
+      }),
+    );
+    const res = await submit();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.feedback.strengths).toEqual(["a", "b", "c"]);
+    expect(body.feedback.fixes).toEqual(["1", "2", "3"]);
+  });
+
   it("truncates over-long model output instead of failing", async () => {
     mockedComplete.mockResolvedValue(
       JSON.stringify({ summary: "s".repeat(2_000), strengths: [], fixes: ["f".repeat(2_000)] }),
