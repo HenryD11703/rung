@@ -62,6 +62,7 @@ Sandpack file paths use a **leading slash** (`/App.js`). Check helpers match fil
 - Fonts: Inter Tight for display (`.display`; small headings set `[--display-tracking:-0.022em]` so they are not cramped), Inter for text, JetBrains Mono for labels (`.label`).
 - Swiss structure: faint 12-column grid in the hero, hairline rules, numbered rows, large tabular numerals. No gradients, no emojis in the UI, no purple, no heavy rounded cards.
 - Mobile: panes become tabs under `lg`. Touch targets are at least 44px. A test fails on horizontal overflow.
+- Desktop: three draggable dividers (`components/workspace/ResizeHandle.tsx`, state in `lib/workspace-layout.ts`, saved under `rung:layout:v1`). They sit on the *inner* edge of the pane after the divider so they never cover a scrollbar. While dragging, `[data-dragging] iframe` loses pointer events so the preview cannot steal the drag. Do not name a file `layout.ts` inside `app/`: Next treats it as a special file.
 
 ## Known facts worth remembering
 

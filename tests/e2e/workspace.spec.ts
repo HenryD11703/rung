@@ -251,3 +251,147 @@ test.describe("navigation", () => {
     expect(serious, JSON.stringify(serious.map((v) => [v.id, v.nodes.map((n) => n.target)]), null, 2)).toEqual([]);
   });
 });
+
+test.describe("resizable panes", () => {
+  const BRIEF = "Resize the brief panel";
+  const COLUMN = "Resize the preview and checks column";
+  const SPLIT = "Resize the preview and checks split";
+
+  const size = async (page: import("@playwright/test").Page, region: string) =>
+    (await page.getByRole("region", { name: region }).boundingBox())!;
+
+  async function drag(page: import("@playwright/test").Page, name: string, dx: number, dy: number) {
+    const box = (await page.getByRole("separator", { name }).boundingBox())!;
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x + dx, y + dy, { steps: 10 });
+    await page.mouse.up();
+  }
+
+  test.beforeEach(async ({}, info) => {
+    test.skip(isMobile(info.project.name), "dividers are a desktop feature");
+  });
+
+  test("exposes three accessible separators", async ({ page }) => {
+    await page.goto(COUNTER);
+    for (const name of [BRIEF, COLUMN, SPLIT]) {
+      const separator = page.getByRole("separator", { name });
+      await expect(separator).toBeVisible();
+      await expect(separator).toHaveAttribute("aria-valuenow", /\d+/);
+      await expect(separator).toHaveAttribute("aria-valuemin", /\d+/);
+      await expect(separator).toHaveAttribute("aria-valuemax", /\d+/);
+    }
+  });
+
+  test("dragging the brief divider resizes the brief and the editor", async ({ page }) => {
+    await page.goto(COUNTER);
+    const before = await size(page, "Brief");
+    const editorBefore = await size(page, "Code editor");
+
+    await drag(page, BRIEF, 120, 0);
+
+    const after = await size(page, "Brief");
+    const editorAfter = await size(page, "Code editor");
+    expect(after.width).toBeGreaterThan(before.width + 100);
+    expect(editorAfter.width).toBeLessThan(editorBefore.width - 100);
+  });
+
+  test("sizes stay inside their limits", async ({ page }) => {
+    await page.goto(COUNTER);
+    await drag(page, BRIEF, -2000, 0);
+    expect((await size(page, "Brief")).width).toBeGreaterThanOrEqual(259);
+    expect((await size(page, "Brief")).width).toBeLessThanOrEqual(262);
+
+    await drag(page, BRIEF, 3000, 0);
+    expect((await size(page, "Brief")).width).toBeLessThanOrEqual(562);
+    // The editor never disappears.
+    expect((await size(page, "Code editor")).width).toBeGreaterThanOrEqual(319);
+  });
+
+  test("the right column can be widened by dragging its divider left", async ({ page }) => {
+    await page.goto(COUNTER);
+    const before = await size(page, "Checks");
+    await drag(page, COLUMN, -150, 0);
+    const after = await size(page, "Checks");
+    expect(after.width).toBeGreaterThan(before.width + 120);
+  });
+
+  test("dragging across the preview iframe still works", async ({ page }) => {
+    await page.goto(COUNTER);
+    await expect(page.frameLocator("iframe").first().getByRole("button", { name: "Increment" })).toBeVisible({
+      timeout: 45_000,
+    });
+    const before = await size(page, "Checks");
+    const previewBefore = await size(page, "Preview");
+
+    // Up through the iframe: the checks panel grows, the preview shrinks.
+    await drag(page, SPLIT, 0, -150);
+
+    const after = await size(page, "Checks");
+    const previewAfter = await size(page, "Preview");
+    expect(after.height).toBeGreaterThan(before.height + 120);
+    expect(previewAfter.height).toBeLessThan(previewBefore.height - 120);
+  });
+
+  test("keyboard: arrows resize, Home and End jump, Enter resets", async ({ page }) => {
+    await page.goto(COUNTER);
+    const separator = page.getByRole("separator", { name: BRIEF });
+    const start = (await size(page, "Brief")).width;
+
+    await separator.focus();
+    await page.keyboard.press("ArrowRight");
+    expect((await size(page, "Brief")).width).toBeCloseTo(start + 16, 0);
+
+    await page.keyboard.press("Shift+ArrowLeft");
+    expect((await size(page, "Brief")).width).toBeCloseTo(start + 16 - 64, 0);
+
+    await page.keyboard.press("End");
+    await expect(separator).toHaveAttribute("aria-valuenow", "560");
+    await page.keyboard.press("Home");
+    await expect(separator).toHaveAttribute("aria-valuenow", "260");
+
+    await page.keyboard.press("Enter");
+    await expect(separator).toHaveAttribute("aria-valuenow", "360");
+  });
+
+  test("double-click restores the default size", async ({ page }) => {
+    await page.goto(COUNTER);
+    const original = (await size(page, "Brief")).width;
+    await drag(page, BRIEF, 100, 0);
+    await page.getByRole("separator", { name: BRIEF }).dblclick();
+    expect((await size(page, "Brief")).width).toBeCloseTo(original, 0);
+  });
+
+  test("the layout is remembered after a reload and shared across exercises", async ({ page }) => {
+    await page.goto(COUNTER);
+    await drag(page, BRIEF, 100, 0);
+    const resized = (await size(page, "Brief")).width;
+
+    await page.reload();
+    await expect.poll(async () => (await size(page, "Brief")).width).toBeCloseTo(resized, 0);
+
+    await page.goto("/exercises/lists-and-keys");
+    await expect.poll(async () => (await size(page, "Brief")).width).toBeCloseTo(resized, 0);
+  });
+
+  test("a corrupted saved layout falls back to the defaults", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("rung:layout:v1", '{"brief":"wide","right":-5,"checks":9999}'));
+    await page.goto(COUNTER);
+    const separator = page.getByRole("separator", { name: BRIEF });
+    await expect(separator).toHaveAttribute("aria-valuenow", "360");
+    await expect(page.getByRole("separator", { name: COLUMN })).toHaveAttribute("aria-valuenow", "300");
+    await expect(page.getByRole("separator", { name: SPLIT })).toHaveAttribute("aria-valuenow", "80");
+  });
+});
+
+test.describe("dividers on phones", () => {
+  test("are not shown", async ({ page }, info) => {
+    test.skip(!isMobile(info.project.name), "mobile only");
+    await page.goto(COUNTER);
+    // Hidden elements are not exposed to assistive tech either.
+    await expect(page.getByRole("separator")).toHaveCount(0);
+    for (const separator of await page.locator("[role=separator]").all()) await expect(separator).toBeHidden();
+  });
+});

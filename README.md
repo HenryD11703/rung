@@ -28,6 +28,7 @@ What makes it different from a tutorial site is how the feedback works:
 - Progress saved in the browser, with no account.
 - Phone-friendly workspace: panes become tabs, 44px tap targets, no horizontal scroll.
 - Keyboard: `Ctrl/Cmd + Enter` runs the checks, even from the editor.
+- Resizable panes on desktop: drag the dividers to give the editor, the preview or the checks more room. Arrow keys work too, `Home`/`End` jump to the limits, double-click (or `Enter`) resets, and the layout is remembered.
 - Accessible: semantic landmarks, focus management in dialogs, `prefers-reduced-motion`, axe checks in CI.
 - Open source and easy to extend. See [CONTRIBUTING.md](CONTRIBUTING.md).
 

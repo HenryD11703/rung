@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState, type CSSProperties } from "react";
 import { SandpackProvider } from "@codesandbox/sandpack-react";
 import { getAllExercises, getExerciseBySlug, getNeighbours } from "@/lib/exercises-registry";
 import { cn } from "@/lib/cn";
+import { LIMITS, useLayout } from "@/lib/workspace-layout";
 import { Brand } from "../ui/Brand";
 import { BriefPanel } from "./BriefPanel";
 import { ChecksPanel, type Score } from "./ChecksPanel";
 import { EditorPane } from "./EditorPane";
 import { ExerciseMenu } from "./ExerciseMenu";
 import { PreviewPane } from "./PreviewPane";
+import { ResizeHandle } from "./ResizeHandle";
 import { signalTheme } from "./theme";
 
 type PaneId = "brief" | "code" | "preview" | "checks";
@@ -34,10 +36,15 @@ export default function Workspace({ slug }: { slug: string }) {
   const [score, setScore] = useState<Score>({ passed: 0, total: exercise.checks.length, ran: false });
   const onScore = useCallback((s: Score) => setScore(s), []);
 
+  // Desktop only: drag the dividers to give the editor, preview or checks more room.
+  const { layout, update, reset } = useLayout();
+  const [dragging, setDragging] = useState(false);
+  const rightColumn = useRef<HTMLDivElement>(null);
+
   const paneClass = (id: PaneId) =>
     cn(
       // overflow-hidden: Sandpack paints unwrapped code for a frame before the editor takes over.
-      "absolute inset-0 min-h-0 min-w-0 overflow-hidden bg-canvas lg:static lg:inset-auto",
+      "absolute inset-0 min-h-0 min-w-0 overflow-hidden bg-canvas lg:relative lg:inset-auto",
       pane !== id && "invisible lg:visible",
     );
 
@@ -48,7 +55,7 @@ export default function Workspace({ slug }: { slug: string }) {
       files={exercise.files}
       options={{ recompileMode: "delayed", recompileDelay: 600, initMode: "user-visible" }}
     >
-      <div className="flex h-dvh flex-col bg-canvas">
+      <div className="flex h-dvh flex-col bg-canvas" data-dragging={dragging || undefined}>
         {/* ---------------------------------------------------------- header */}
         <header className="flex h-12 shrink-0 items-stretch justify-between border-b border-line pl-4 lg:h-[52px]">
           <div className="flex min-w-0 items-center gap-4">
@@ -76,7 +83,8 @@ export default function Workspace({ slug }: { slug: string }) {
         {/* ------------------------------------------------------------ body */}
         <main
           id="main"
-          className="relative min-h-0 flex-1 lg:grid lg:grid-cols-[minmax(320px,360px)_minmax(0,1fr)_minmax(340px,420px)]"
+          style={{ "--brief-w": `${layout.brief}px`, "--right-w": `${layout.right}px` } as CSSProperties}
+          className="relative min-h-0 flex-1 lg:grid lg:grid-cols-[minmax(240px,var(--brief-w))_minmax(320px,1fr)_minmax(300px,var(--right-w))]"
         >
           <section aria-label="Brief" className={cn(paneClass("brief"), "lg:border-r lg:border-line")}>
             <BriefPanel exercise={exercise} number={number} />
@@ -84,16 +92,61 @@ export default function Workspace({ slug }: { slug: string }) {
 
           <section aria-label="Code editor" className={paneClass("code")}>
             <EditorPane exercise={exercise} onReveal={() => setUsedSolution(true)} />
+            <ResizeHandle
+              orientation="vertical"
+              direction={1}
+              label="Resize the brief panel"
+              value={layout.brief}
+              min={LIMITS.brief.min}
+              max={LIMITS.brief.max}
+              onChange={(brief) => update({ brief })}
+              onReset={() => reset("brief")}
+              onDragging={setDragging}
+              className="left-0 top-0 h-full"
+            />
           </section>
 
-          <div className="contents lg:flex lg:min-h-0 lg:flex-col lg:border-l lg:border-line">
+          <div
+            ref={rightColumn}
+            className="contents lg:relative lg:flex lg:min-h-0 lg:flex-col lg:border-l lg:border-line"
+          >
+            <ResizeHandle
+              orientation="vertical"
+              direction={-1}
+              label="Resize the preview and checks column"
+              value={layout.right}
+              min={LIMITS.right.min}
+              max={LIMITS.right.max}
+              onChange={(right) => update({ right })}
+              onReset={() => reset("right")}
+              onDragging={setDragging}
+              className="-left-px top-0 h-full"
+            />
             <section aria-label="Preview" className={cn(paneClass("preview"), "lg:min-h-0 lg:flex-1")}>
               <PreviewPane />
             </section>
             <section
               aria-label="Checks"
-              className={cn(paneClass("checks"), "lg:h-[56%] lg:flex-none lg:border-t lg:border-line-strong")}
+              style={{ "--checks-h": `${layout.checks}%` } as CSSProperties}
+              className={cn(
+                paneClass("checks"),
+                "lg:h-[var(--checks-h)] lg:max-h-[calc(100%-140px)] lg:min-h-[140px] lg:flex-none lg:border-t lg:border-line-strong",
+              )}
             >
+              <ResizeHandle
+                orientation="horizontal"
+                direction={-1}
+                label="Resize the preview and checks split"
+                value={layout.checks}
+                min={LIMITS.checks.min}
+                max={LIMITS.checks.max}
+                step={2}
+                pxPerUnit={() => (rightColumn.current?.clientHeight ?? 100) / 100}
+                onChange={(checks) => update({ checks })}
+                onReset={() => reset("checks")}
+                onDragging={setDragging}
+                className="inset-x-0 -top-px"
+              />
               <ChecksPanel
                 exercise={exercise}
                 next={next ? { slug: next.slug, title: next.title } : undefined}

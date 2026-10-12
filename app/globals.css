@@ -136,6 +136,14 @@ body {
   font-family: var(--font-mono) !important;
 }
 
+/* While a divider is being dragged, the preview iframe must not steal the pointer. */
+[data-dragging] iframe {
+  pointer-events: none;
+}
+[data-dragging] * {
+  user-select: none;
+}
+
 @keyframes rise {
   from {
     opacity: 0;
