@@ -1,69 +1,80 @@
 @import "tailwindcss";
 
 /*
-  Design tokens.
-  Warm paper, a single ink, and one signal orange. Orange is only ever used
-  as a fill or a rule; for orange *text* use --color-accent-deep (4.5:1).
+  Design tokens: "Signal".
+  Near-black canvas, one warm-white ink, one acid-lime accent. Status colors
+  (ok / bad) are only for check results. Lime is the only decorative color.
 */
 :root {
-  --paper: #f2f0eb;
-  --paper-2: #e9e6de;
-  --ink: #111110;
-  --ink-2: #4f4d48;
-  --ink-3: #6e6b64;
-  --rule-soft: #cfcbc1;
-  --accent: #ff4f00;
-  --accent-deep: #c93a00;
-  --ok: #0b6b41;
+  color-scheme: dark;
+  --canvas: #0b0b0c;
+  --raised: #131315;
+  --raised-2: #1a1a1d;
+  --fg: #f3f3f0;
+  --muted: #9a9aa0;
+  /* faint is for large numerals and disabled states only (about 3.8:1) */
+  --faint: #6d6d74;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.3);
+  --accent: #dfff3f;
+  --on-accent: #0b0b0c;
+  --ok: #46e3a0;
+  --bad: #ff6b5e;
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
-  --color-ink-3: var(--ink-3);
-  --color-rule-soft: var(--rule-soft);
+  --color-canvas: var(--canvas);
+  --color-raised: var(--raised);
+  --color-raised-2: var(--raised-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
-  --color-accent-deep: var(--accent-deep);
+  --color-on-accent: var(--on-accent);
   --color-ok: var(--ok);
+  --color-bad: var(--bad);
 
-  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-inter-tight), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --radius-ui: 3px;
 }
 
 html {
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--canvas);
+  color: var(--fg);
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   font-family: var(--font-sans);
-  font-feature-settings: "kern", "liga", "calt";
+  font-feature-settings: "kern", "liga", "calt", "cv11";
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
   background: var(--accent);
-  color: var(--ink);
+  color: var(--on-accent);
 }
 
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-.on-ink :focus-visible {
-  outline-color: var(--accent);
-}
-
-/* Archivo ships a width axis. Display type uses the wide cut. */
+/* Display type: tight, heavy, never wider than it needs to be */
 .display {
-  font-stretch: 112%;
-  font-weight: 800;
-  letter-spacing: -0.045em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  /* Override per element with [--display-tracking:-0.025em] on small headings */
+  letter-spacing: var(--display-tracking, -0.045em);
+  /* Inter Tight's word space is narrow; keep multi-word headings readable */
+  word-spacing: 0.05em;
+  line-height: 0.92;
 }
 
 .label {
@@ -78,22 +89,28 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Thin, quiet scrollbars that match the paper */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--rule-soft) transparent;
+/* The Swiss grid, barely visible: 12 columns behind the hero */
+.grid-lines {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: calc(100% / 12) 100%;
 }
 
+/* Quiet scrollbars on the dark canvas */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--rule-soft);
-  border: 2px solid var(--paper);
+  background: rgba(255, 255, 255, 0.16);
+  border: 2px solid var(--canvas);
+  border-radius: 6px;
 }
 
-/* Sandpack: keep it on the same paper */
+/* Sandpack: same canvas, hairline borders */
 .sp-wrapper,
 .sp-layout,
 .sp-stack {
@@ -105,7 +122,7 @@ body {
   background: transparent !important;
 }
 .sp-tabs {
-  border-bottom: 1px solid var(--ink) !important;
+  border-bottom: 1px solid var(--line) !important;
 }
 .sp-tab-button {
   font-family: var(--font-mono) !important;
@@ -129,7 +146,6 @@ body {
     transform: translateY(0);
   }
 }
-
 .rise {
   animation: rise 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
@@ -137,13 +153,12 @@ body {
 @keyframes pulse-bar {
   0%,
   100% {
-    opacity: 0.35;
+    opacity: 0.3;
   }
   50% {
-    opacity: 1;
+    opacity: 0.9;
   }
 }
-
 .pulse-bar {
   animation: pulse-bar 1.1s ease-in-out infinite;
 }

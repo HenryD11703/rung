@@ -25,7 +25,7 @@ export function ExerciseMenu({
       <button
         type="button"
         onClick={() => dialog.current?.showModal()}
-        className="label flex min-h-11 items-center gap-2 border-l border-ink px-4 hover:bg-paper-2"
+        className="label flex min-h-11 items-center gap-2 border-l border-line px-4 text-muted transition-colors hover:text-fg"
         aria-haspopup="dialog"
       >
         <span aria-hidden="true">☰</span>
@@ -39,15 +39,15 @@ export function ExerciseMenu({
         onClick={(event) => {
           if (event.target === dialog.current) dialog.current?.close();
         }}
-        className="m-0 mr-auto h-dvh max-h-none w-full max-w-md border-r-2 border-ink bg-paper p-0 text-ink backdrop:bg-ink/60"
+        className="m-0 mr-auto h-dvh max-h-none w-full max-w-md border-r border-line-strong bg-canvas p-0 text-fg backdrop:bg-black/70"
       >
         <div className="flex h-full flex-col">
-          <div className="flex h-14 shrink-0 items-center justify-between border-b-2 border-ink px-5">
-            <h2 className="display text-2xl">Index</h2>
+          <div className="flex h-14 shrink-0 items-center justify-between border-b border-line px-5">
+            <h2 className="display text-2xl [--display-tracking:-0.012em]">Index</h2>
             <button
               type="button"
               onClick={() => dialog.current?.close()}
-              className="label min-h-11 px-3 hover:bg-paper-2"
+              className="label min-h-11 rounded-ui px-3 text-muted hover:text-fg"
             >
               Close ✕
             </button>
@@ -58,24 +58,24 @@ export function ExerciseMenu({
               const entry = progress[exercise.slug];
               const current = exercise.slug === currentSlug;
               return (
-                <li key={exercise.slug} className="border-b border-ink">
+                <li key={exercise.slug} className="border-b border-line">
                   <Link
                     href={`/exercises/${exercise.slug}`}
                     onClick={() => dialog.current?.close()}
                     aria-current={current ? "page" : undefined}
                     className={cn(
-                      "grid min-h-14 grid-cols-[2.5rem_1fr_auto] items-center gap-3 px-5 py-3",
-                      current ? "on-ink bg-ink text-paper" : "hover:bg-paper-2",
+                      "grid min-h-14 grid-cols-[2.5rem_1fr_auto] items-center gap-3 px-5 py-3 transition-colors",
+                      current ? "bg-raised-2" : "hover:bg-raised",
                     )}
                   >
-                    <span className={cn("display tnum text-xl", current ? "text-accent" : "text-ink-3")}>
+                    <span className={cn("display tnum text-xl", current ? "text-accent" : "text-faint")}>
                       {pad(exercise.number)}
                     </span>
-                    <span className="font-semibold leading-tight">{exercise.title}</span>
-                    <span className="flex items-center gap-3">
+                    <span className="font-medium leading-tight">{exercise.title}</span>
+                    <span className="flex items-center gap-3 text-muted">
                       <Level level={exercise.difficulty} showLabel={false} />
                       <span
-                        className="label w-3 text-right"
+                        className="label w-3 text-right text-accent"
                         aria-label={entry ? "Completed" : undefined}
                       >
                         {entry ? "■" : ""}

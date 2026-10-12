@@ -9,7 +9,7 @@ export function ProgressBadge({ total }: { total: number }) {
 
   return (
     <span
-      className="label tnum border border-ink px-2 py-1"
+      className="label tnum rounded-ui border border-line-strong px-2 py-1 text-fg"
       aria-label={`${done} of ${total} exercises completed`}
     >
       {pad(done)}/{pad(total)}

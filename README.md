@@ -1,6 +1,6 @@
-# Junior to Mid
+# Rung
 
-**React exercises with automated checks and an AI mentor.** Write code in the browser, run checks that say exactly what is missing, and ask a mentor to review only what you changed.
+**React practice, one rung at a time.** Write code in the browser, run automated checks that say exactly what is missing, and ask an AI mentor to review only what you changed.
 
 ![Home](docs/home.png)
 
@@ -36,7 +36,7 @@ What makes it different from a tutorial site is how the feedback works:
 | Area | Choice |
 | :--- | :--- |
 | Framework | Next.js 16 (App Router), React 19, TypeScript (strict) |
-| Styling | Tailwind CSS 4, custom design tokens, Archivo + IBM Plex Mono |
+| Styling | Tailwind CSS 4, custom design tokens ("Signal"), Inter, Inter Tight and JetBrains Mono |
 | Editor and preview | [Sandpack](https://sandpack.codesandbox.io/) |
 | Code analysis | [acorn](https://github.com/acornjs/acorn) + acorn-jsx |
 | Validation | zod |
@@ -138,7 +138,7 @@ Deploy to Vercel (or any Node host). Set `GROQ_API_KEY` in the project settings.
 - Behaviour tests for UI exercises (Testing Library inside Sandpack).
 - Optional accounts, so progress follows you across devices.
 - More tracks: TypeScript with React, data fetching with a cache, testing.
-- Dark theme.
+- Light theme (the interface is dark-only for now).
 
 ## Contributing
 

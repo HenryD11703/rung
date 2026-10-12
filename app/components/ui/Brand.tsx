@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
-/** Three steps climbing right. Short, shorter, tallest: levels. */
+/** Three steps climbing right: short, shorter, tallest. The top one is lime. */
 export function BrandMark({ className }: { className?: string }) {
   return (
     <svg
@@ -10,35 +10,25 @@ export function BrandMark({ className }: { className?: string }) {
       aria-hidden="true"
       focusable="false"
     >
-      <rect width="32" height="32" fill="currentColor" />
-      <rect x="5" y="19" width="5" height="8" className="fill-paper" />
-      <rect x="13.5" y="12" width="5" height="15" className="fill-paper" />
-      <rect x="22" y="5" width="5" height="22" className="fill-accent" />
+      <rect x="3" y="19" width="7" height="10" className="fill-fg" />
+      <rect x="12.5" y="11" width="7" height="18" className="fill-fg" />
+      <rect x="22" y="3" width="7" height="26" className="fill-accent" />
     </svg>
   );
 }
 
-export function Brand({
-  className,
-  compact = false,
-}: {
-  className?: string;
-  compact?: boolean;
-}) {
+export function Brand({ className, size = "md" }: { className?: string; size?: "md" | "lg" }) {
   return (
     <Link
       href="/"
-      aria-label="Junior to Mid, home"
-      className={cn("group inline-flex items-center gap-3", className)}
+      aria-label="Rung, home"
+      className={cn("inline-flex items-center gap-3 rounded-ui", className)}
     >
-      <BrandMark />
+      <BrandMark className={size === "lg" ? "size-8" : "size-[26px]"} />
       <span
-        className={cn(
-          "display text-[1.05rem] leading-none tracking-[-0.03em]",
-          compact && "hidden sm:inline",
-        )}
+        className={cn("display leading-none", "[--display-tracking:-0.03em]", size === "lg" ? "text-[1.6rem]" : "text-[1.35rem]")}
       >
-        Junior to Mid
+        Rung
       </span>
     </Link>
   );

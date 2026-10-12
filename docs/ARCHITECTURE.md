@@ -104,4 +104,4 @@ The default model is `openai/gpt-oss-120b` on Groq, with low reasoning effort (a
 
 ## Design system
 
-Warm paper, one ink, one signal orange. Orange is only used as a fill or a rule; orange *text* uses a darker shade that meets 4.5:1 on the paper. Display type uses Archivo's wide cut, labels use IBM Plex Mono. The home page's bar graph is drawn from real data (exercises per level), which doubles as the brand mark: three steps climbing right.
+"Signal": a near-black canvas, one warm-white ink and one acid-lime accent. Lime is the only decorative color; green and coral exist only to show check results. Swiss-inspired structure (a faint 12-column grid, hairline rules, numbered rows, large tabular numerals) with tight display type (Inter Tight), Inter for text and JetBrains Mono for labels. The home page's bar graph is drawn from real data (exercises per level) and doubles as the brand mark: three steps climbing right, the top one lime.

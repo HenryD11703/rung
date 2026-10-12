@@ -28,10 +28,7 @@ export function Level({
         {[1, 2, 3].map((i) => (
           <span
             key={i}
-            className={cn(
-              "block size-[9px] border border-current",
-              i <= RANK[level] && "bg-current",
-            )}
+            className={cn("block size-[9px] rounded-[2px] border border-current", i <= RANK[level] && "bg-current")}
           />
         ))}
       </span>

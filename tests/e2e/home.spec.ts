@@ -5,8 +5,8 @@ test.describe("home", () => {
   test("shows the brand, the stats and all 12 exercises in order", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Junior");
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("to Mid");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/^Rung\.?$/);
+    await expect(page.getByRole("link", { name: "Rung, home" }).first()).toBeVisible();
 
     const rows = page.locator("#exercises ol > li");
     await expect(rows).toHaveCount(12);
@@ -17,7 +17,7 @@ test.describe("home", () => {
 
   test("the call to action opens the first exercise", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: /Start with 01/ }).click();
+    await page.getByRole("link", { name: /Start with exercise 01/ }).click();
     await expect(page).toHaveURL(/\/exercises\/state-counter$/);
     await expect(page.getByRole("heading", { level: 1, name: "State: Build a Counter" })).toBeVisible();
   });
@@ -36,7 +36,7 @@ test.describe("home", () => {
   test("unknown exercises get a branded 404", async ({ page }) => {
     const response = await page.goto("/exercises/does-not-exist");
     expect(response?.status()).toBe(404);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Not here");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Missing rung");
   });
 
   test("has no serious accessibility violations", async ({ page }) => {

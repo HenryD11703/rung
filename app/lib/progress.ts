@@ -2,7 +2,9 @@
 
 import { useSyncExternalStore } from "react";
 
-const KEY = "j2m:progress:v1";
+const KEY = "rung:progress:v1";
+/** The product used to be called "Junior to Mid"; keep anyone's progress. */
+const LEGACY_KEY = "j2m:progress:v1";
 
 export interface ProgressEntry {
   passedAt: number;
@@ -20,7 +22,15 @@ let valueCache: Progress = EMPTY;
 
 function read(): Progress {
   try {
-    const raw = window.localStorage.getItem(KEY) ?? "";
+    let raw = window.localStorage.getItem(KEY);
+    if (raw === null) {
+      const legacy = window.localStorage.getItem(LEGACY_KEY);
+      if (legacy !== null) {
+        window.localStorage.setItem(KEY, legacy);
+        raw = legacy;
+      }
+    }
+    raw ??= "";
     if (raw === rawCache) return valueCache;
     rawCache = raw;
     const parsed: unknown = raw ? JSON.parse(raw) : {};

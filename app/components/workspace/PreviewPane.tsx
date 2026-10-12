@@ -11,7 +11,7 @@ export function PreviewPane() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div role="tablist" aria-label="Output" className="flex h-11 shrink-0 items-stretch border-b border-ink">
+      <div role="tablist" aria-label="Output" className="flex h-11 shrink-0 items-stretch border-b border-line">
         {(["preview", "console"] as const).map((id) => (
           <button
             key={id}
@@ -20,7 +20,7 @@ export function PreviewPane() {
             onClick={() => setView(id)}
             className={cn(
               "label min-w-24 px-4 transition-colors",
-              view === id ? "bg-ink text-paper" : "hover:bg-paper-2",
+              view === id ? "text-fg shadow-[inset_0_-2px_0_var(--accent)]" : "text-muted hover:text-fg",
             )}
           >
             {id === "preview" ? "Preview" : "Console"}

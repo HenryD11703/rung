@@ -6,17 +6,17 @@ export default function NotFound() {
   return (
     <>
       <SiteHeader total={exercises.length} />
-      <main id="main" className="mx-auto max-w-[1400px] px-5 py-20 md:px-8">
-        <p className="label text-ink-2">Error 404</p>
-        <h1 className="display mt-4 text-[clamp(4rem,14vw,11rem)] leading-[0.85]">
-          Not here<span className="text-accent">.</span>
+      <main id="main" className="mx-auto max-w-[1360px] px-5 py-20 md:px-10">
+        <p className="label text-muted">Error 404</p>
+        <h1 className="display mt-4 text-[clamp(4.5rem,15vw,12rem)] leading-[0.85]">
+          Missing rung<span className="text-accent">.</span>
         </h1>
-        <p className="mt-8 max-w-md text-xl leading-snug">
+        <p className="mt-8 max-w-md text-xl leading-snug text-muted">
           That exercise does not exist. It may have been renamed.
         </p>
         <Link
           href="/#exercises"
-          className="on-ink mt-8 inline-flex h-14 items-center bg-ink px-6 font-semibold text-paper hover:bg-accent hover:text-ink"
+          className="mt-8 inline-flex h-[52px] items-center rounded-ui bg-accent px-6 font-semibold text-on-accent hover:brightness-95"
         >
           Browse the index →
         </Link>

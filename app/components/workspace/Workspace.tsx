@@ -11,7 +11,7 @@ import { ChecksPanel, type Score } from "./ChecksPanel";
 import { EditorPane } from "./EditorPane";
 import { ExerciseMenu } from "./ExerciseMenu";
 import { PreviewPane } from "./PreviewPane";
-import { paperTheme } from "./theme";
+import { signalTheme } from "./theme";
 
 type PaneId = "brief" | "code" | "preview" | "checks";
 
@@ -37,25 +37,25 @@ export default function Workspace({ slug }: { slug: string }) {
   const paneClass = (id: PaneId) =>
     cn(
       // overflow-hidden: Sandpack paints unwrapped code for a frame before the editor takes over.
-      "absolute inset-0 min-h-0 min-w-0 overflow-hidden bg-paper lg:static lg:inset-auto",
+      "absolute inset-0 min-h-0 min-w-0 overflow-hidden bg-canvas lg:static lg:inset-auto",
       pane !== id && "invisible lg:visible",
     );
 
   return (
     <SandpackProvider
       template="react"
-      theme={paperTheme}
+      theme={signalTheme}
       files={exercise.files}
       options={{ recompileMode: "delayed", recompileDelay: 600, initMode: "user-visible" }}
     >
-      <div className="flex h-dvh flex-col bg-paper">
+      <div className="flex h-dvh flex-col bg-canvas">
         {/* ---------------------------------------------------------- header */}
-        <header className="flex h-12 shrink-0 items-stretch justify-between border-b-2 border-ink pl-4 lg:h-14">
+        <header className="flex h-12 shrink-0 items-stretch justify-between border-b border-line pl-4 lg:h-[52px]">
           <div className="flex min-w-0 items-center gap-4">
-            <Brand compact />
-            <span className="hidden h-5 w-px bg-ink sm:block" aria-hidden="true" />
+            <Brand />
+            <span className="hidden h-5 w-px bg-line-strong sm:block" aria-hidden="true" />
             <p className="min-w-0 truncate">
-              <span className="label tnum mr-2 text-ink-2">
+              <span className="label tnum mr-2 text-muted">
                 {String(number).padStart(2, "0")}/{String(summaries.length).padStart(2, "0")}
               </span>
               <span className="hidden text-sm font-semibold sm:inline">{exercise.title}</span>
@@ -76,9 +76,9 @@ export default function Workspace({ slug }: { slug: string }) {
         {/* ------------------------------------------------------------ body */}
         <main
           id="main"
-          className="relative min-h-0 flex-1 lg:grid lg:grid-cols-[minmax(320px,380px)_minmax(0,1fr)_minmax(340px,36%)]"
+          className="relative min-h-0 flex-1 lg:grid lg:grid-cols-[minmax(320px,360px)_minmax(0,1fr)_minmax(340px,420px)]"
         >
-          <section aria-label="Brief" className={cn(paneClass("brief"), "lg:border-r lg:border-ink")}>
+          <section aria-label="Brief" className={cn(paneClass("brief"), "lg:border-r lg:border-line")}>
             <BriefPanel exercise={exercise} number={number} />
           </section>
 
@@ -86,13 +86,13 @@ export default function Workspace({ slug }: { slug: string }) {
             <EditorPane exercise={exercise} onReveal={() => setUsedSolution(true)} />
           </section>
 
-          <div className="contents lg:flex lg:min-h-0 lg:flex-col lg:border-l lg:border-ink">
+          <div className="contents lg:flex lg:min-h-0 lg:flex-col lg:border-l lg:border-line">
             <section aria-label="Preview" className={cn(paneClass("preview"), "lg:min-h-0 lg:flex-1")}>
               <PreviewPane />
             </section>
             <section
               aria-label="Checks"
-              className={cn(paneClass("checks"), "lg:h-[52%] lg:flex-none lg:border-t-2 lg:border-ink")}
+              className={cn(paneClass("checks"), "lg:h-[56%] lg:flex-none lg:border-t lg:border-line-strong")}
             >
               <ChecksPanel
                 exercise={exercise}
@@ -107,7 +107,7 @@ export default function Workspace({ slug }: { slug: string }) {
         {/* --------------------------------------------- mobile tab bar */}
         <nav
           aria-label="Workspace sections"
-          className="grid shrink-0 grid-cols-4 border-t-2 border-ink pb-[env(safe-area-inset-bottom)] lg:hidden"
+          className="grid shrink-0 grid-cols-4 border-t border-line-strong bg-canvas pb-[env(safe-area-inset-bottom)] lg:hidden"
         >
           {PANES.map((p) => (
             <button
@@ -116,8 +116,10 @@ export default function Workspace({ slug }: { slug: string }) {
               onClick={() => setPane(p.id)}
               aria-pressed={pane === p.id}
               className={cn(
-                "label on-ink flex min-h-14 flex-col items-center justify-center gap-0.5 border-r border-ink last:border-r-0",
-                pane === p.id ? "bg-ink text-paper" : "hover:bg-paper-2",
+                "label flex min-h-14 flex-col items-center justify-center gap-0.5 border-r border-line last:border-r-0",
+                pane === p.id
+                  ? "bg-raised-2 text-accent shadow-[inset_0_2px_0_var(--accent)]"
+                  : "text-muted",
               )}
             >
               {p.label}
@@ -143,13 +145,13 @@ function NavLink({
   label: string;
   children: React.ReactNode;
 }) {
-  const base = "label flex min-h-11 w-12 items-center justify-center border-l border-ink text-base";
+  const base = "label flex min-h-11 w-12 items-center justify-center border-l border-line text-base";
   return href ? (
-    <Link href={href} aria-label={label} className={cn(base, "hover:bg-paper-2")}>
+    <Link href={href} aria-label={label} className={cn(base, "text-muted transition-colors hover:text-fg")}>
       {children}
     </Link>
   ) : (
-    <span aria-label={`${label} (none)`} className={cn(base, "text-rule-soft")}>
+    <span aria-label={`${label} (none)`} className={cn(base, "text-faint")}>
       {children}
     </span>
   );

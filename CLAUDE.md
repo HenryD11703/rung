@@ -1,6 +1,6 @@
 # CLAUDE.md — technical guide for this repo
 
-React practice platform: 12 exercises, in-browser editor (Sandpack), **automated checks decide pass/fail**, an AI mentor only explains. Product name is **being changed** (the current name, "Junior to Mid", is a placeholder the author dislikes). Do not invent a new name; ask.
+React practice platform: 12 exercises, in-browser editor (Sandpack), **automated checks decide pass/fail**, an AI mentor only explains. Product name: **Rung** (formerly "Junior to Mid"; chosen by the author). The GitHub repo is still `learn_react_j2m` until the author renames it.
 
 Context about the author and the bigger project lives outside this repo, in `henry-b/ESTADO-ACTUAL.md`. Chat with the author is in Spanish; everything in this repo (UI, code, docs, commits) is **English**.
 
@@ -57,9 +57,10 @@ Sandpack file paths use a **leading slash** (`/App.js`). Check helpers match fil
 
 ## Design system (keep it consistent)
 
-- Tokens are CSS variables in `app/globals.css`: paper `#f2f0eb`, ink `#111110`, one accent orange `#ff4f00`. Orange is a fill or a rule; for orange **text** use `accent-deep` (contrast).
-- Fonts: Archivo (display uses the wide cut via `.display`) and IBM Plex Mono for labels (`.label`).
-- Hard edges, hairline rules, numbered rows. No gradients, no rounded cards, no emojis in the UI, no purple.
+- Direction: **"Signal"** (dark, chosen by the author out of three explored; a light theme is planned for later).
+- Tokens are CSS variables in `app/globals.css`: `canvas #0b0b0c`, `raised`, `fg #f3f3f0`, `muted`, one accent lime `#dfff3f`; `ok`/`bad` only for check results. Use the semantic classes (`bg-canvas`, `text-muted`, `border-line`, `rounded-ui`).
+- Fonts: Inter Tight for display (`.display`; small headings set `[--display-tracking:-0.022em]` so they are not cramped), Inter for text, JetBrains Mono for labels (`.label`).
+- Swiss structure: faint 12-column grid in the hero, hairline rules, numbered rows, large tabular numerals. No gradients, no emojis in the UI, no purple, no heavy rounded cards.
 - Mobile: panes become tabs under `lg`. Touch targets are at least 44px. A test fails on horizontal overflow.
 
 ## Known facts worth remembering
@@ -67,7 +68,7 @@ Sandpack file paths use a **leading slash** (`/App.js`). Check helpers match fil
 - Groq retires models. The original `llama-3.3-70b-versatile` returns 404. Default is `openai/gpt-oss-120b`; override with `GROQ_MODEL`. A 404/401 from the provider is reported as "unavailable" and logged with a hint.
 - The rate limiter is in-memory per instance unless `UPSTASH_REDIS_REST_*` is set. On serverless that means per instance.
 - Sandpack's bundler loads from CodeSandbox's CDN, so the preview needs internet. Checks do not.
-- Progress is stored in `localStorage` under a versioned key (`lib/progress.ts`). Changing the key resets users' progress; migrate if you rename it.
+- Progress is stored in `localStorage` (`rung:progress:v1`). The old `j2m:progress:v1` key is migrated automatically on first read.
 - `npm audit --omit=dev` is clean. The remaining audit findings are dev-tooling only.
 
 ## Status

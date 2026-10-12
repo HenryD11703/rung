@@ -37,8 +37,8 @@ export function EditorPane({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex h-11 shrink-0 items-center justify-between border-b border-ink px-3">
-        <span className="label text-ink-2">Editor</span>
+      <div className="flex h-11 shrink-0 items-center justify-between border-b border-line px-3 pl-5">
+        <span className="label text-muted">Editor</span>
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -46,7 +46,7 @@ export function EditorPane({
               sandpack.resetAllFiles();
               setConfirming(false);
             }}
-            className="label min-h-9 px-3 hover:bg-paper-2"
+            className="label min-h-9 rounded-ui px-3 text-muted transition-colors hover:text-fg"
           >
             Reset
           </button>
@@ -55,8 +55,10 @@ export function EditorPane({
             onClick={reveal}
             aria-label={confirming ? "Confirm: reveal the solution" : "Reveal the solution"}
             className={cn(
-              "label min-h-9 border border-ink px-3 transition-colors",
-              confirming ? "on-ink bg-accent text-ink" : "hover:bg-paper-2",
+              "label min-h-9 rounded-ui border px-3 transition-colors",
+              confirming
+                ? "border-accent bg-accent text-on-accent"
+                : "border-line-strong text-fg hover:bg-raised-2",
             )}
           >
             {confirming ? "Sure? Reveal" : "Solution"}

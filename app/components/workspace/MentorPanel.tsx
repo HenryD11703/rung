@@ -89,13 +89,13 @@ export function MentorPanel({ slug, files, report, stale }: Props) {
   const disabled = !!blocker || state.status === "loading" || secondsLeft > 0;
 
   return (
-    <section aria-labelledby="mentor-title" className="border-t-2 border-ink px-5 py-5">
+    <section aria-labelledby="mentor-title" className="border-t border-line-strong px-5 py-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 id="mentor-title" className="display text-xl tracking-tight">
+          <h3 id="mentor-title" className="display text-xl [--display-tracking:-0.012em]">
             AI mentor
           </h3>
-          <p className="mt-1 text-sm text-ink-2">
+          <p className="mt-1 text-sm text-muted">
             Reviews only the files you changed, plus the checks you missed.
           </p>
         </div>
@@ -104,10 +104,10 @@ export function MentorPanel({ slug, files, report, stale }: Props) {
           onClick={ask}
           disabled={disabled}
           className={cn(
-            "label on-ink min-h-11 shrink-0 border border-ink px-4 transition-colors",
+            "label min-h-11 shrink-0 rounded-ui border px-4 transition-colors",
             disabled
-              ? "cursor-not-allowed border-rule-soft text-ink-3"
-              : "bg-ink text-paper hover:bg-accent hover:text-ink",
+              ? "cursor-not-allowed border-line text-faint"
+              : "border-accent bg-accent text-on-accent hover:brightness-95",
           )}
         >
           {state.status === "loading"
@@ -119,20 +119,20 @@ export function MentorPanel({ slug, files, report, stale }: Props) {
       </div>
 
       {blocker && state.status === "idle" && (
-        <p className="mt-3 border-l-2 border-ink pl-3 text-sm text-ink-2">{blocker}</p>
+        <p className="mt-3 border-l-2 border-line-strong pl-3 text-sm text-muted">{blocker}</p>
       )}
 
       <div aria-live="polite" aria-busy={state.status === "loading"} className="mt-4">
         {state.status === "loading" && (
           <div className="space-y-2" aria-label="Waiting for the mentor">
             {[92, 78, 64].map((w) => (
-              <div key={w} className="pulse-bar h-3 bg-rule-soft" style={{ width: `${w}%` }} />
+              <div key={w} className="pulse-bar h-3 rounded-[2px] bg-line-strong" style={{ width: `${w}%` }} />
             ))}
           </div>
         )}
 
         {state.status === "error" && (
-          <p role="alert" className="border-l-4 border-accent bg-paper-2 p-3 text-sm">
+          <p role="alert" className="rounded-ui border-l-4 border-bad bg-raised-2 p-3 text-sm">
             {state.message}
           </p>
         )}
@@ -150,8 +150,8 @@ function FeedbackView({ feedback }: { feedback: Feedback }) {
       <Bullets title="Going well" tone="ok" items={feedback.strengths} />
       <Bullets title="Worth fixing" tone="bad" items={feedback.fixes} />
       {feedback.nextStep && (
-        <p className="border-t border-ink pt-3 text-sm">
-          <span className="label mr-2 text-ink-2">Next</span>
+        <p className="border-t border-line pt-3 text-sm">
+          <span className="label mr-2 text-muted">Next</span>
           {feedback.nextStep}
         </p>
       )}
@@ -171,11 +171,11 @@ function Bullets({
   if (items.length === 0) return null;
   return (
     <div>
-      <h4 className={cn("label mb-1", tone === "ok" ? "text-ok" : "text-accent-deep")}>{title}</h4>
+      <h4 className={cn("label mb-1", tone === "ok" ? "text-ok" : "text-bad")}>{title}</h4>
       <ul>
         {items.map((item, i) => (
-          <li key={i} className="grid grid-cols-[1.25rem_1fr] border-t border-rule-soft py-2 text-sm leading-snug first:border-t-0">
-            <span aria-hidden="true" className={tone === "ok" ? "text-ok" : "text-accent-deep"}>
+          <li key={i} className="grid grid-cols-[1.25rem_1fr] border-t border-line py-2 text-sm leading-snug first:border-t-0">
+            <span aria-hidden="true" className={tone === "ok" ? "text-ok" : "text-bad"}>
               {tone === "ok" ? "✓" : "→"}
             </span>
             <span>{item}</span>

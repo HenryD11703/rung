@@ -21,18 +21,16 @@ export function BriefPanel({ exercise, number }: { exercise: Exercise; number: n
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <header className="shrink-0 border-b border-ink px-5 pb-4 pt-5">
-        <div className="label flex items-center gap-4 text-ink-2">
+      <header className="shrink-0 px-5 pb-4 pt-5">
+        <div className="label flex items-center gap-4 text-muted">
           <span className="tnum">No. {String(number).padStart(2, "0")}</span>
           <Level level={exercise.difficulty} />
           {exercise.estimatedTime ? <span className="tnum">{exercise.estimatedTime} min</span> : null}
         </div>
-        <h1 className="display mt-3 text-[1.7rem] leading-[1.02] tracking-[-0.04em]">
-          {exercise.title}
-        </h1>
+        <h1 className="display mt-3 text-[1.9rem] leading-[1.02] [--display-tracking:-0.012em]">{exercise.title}</h1>
       </header>
 
-      <div role="tablist" aria-label="Exercise sections" className="flex shrink-0 border-b border-ink">
+      <div role="tablist" aria-label="Exercise sections" className="flex shrink-0 border-y border-line">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -42,8 +40,10 @@ export function BriefPanel({ exercise, number }: { exercise: Exercise; number: n
             aria-controls={`${baseId}-panel-${t.id}`}
             onClick={() => setTab(t.id)}
             className={cn(
-              "label relative min-h-11 flex-1 px-3 transition-colors",
-              tab === t.id ? "bg-ink text-paper" : "hover:bg-paper-2",
+              "label min-h-11 flex-1 px-3 transition-colors",
+              tab === t.id
+                ? "text-fg shadow-[inset_0_-2px_0_var(--accent)]"
+                : "text-muted hover:text-fg",
             )}
           >
             {t.label}
@@ -62,17 +62,17 @@ export function BriefPanel({ exercise, number }: { exercise: Exercise; number: n
         {tab === "brief" && (
           <div className="rise space-y-8">
             <section>
-              <h2 className="label mb-3 text-ink-2">Mission</h2>
-              <p className="text-[1.15rem] leading-snug tracking-tight">{exercise.objective}</p>
+              <h2 className="label mb-3 text-muted">Mission</h2>
+              <p className="text-[1.1rem] leading-snug tracking-tight">{exercise.objective}</p>
             </section>
 
             <section>
-              <h2 className="label mb-3 text-ink-2">Tasks</h2>
-              <ol className="border-t border-ink">
+              <h2 className="label mb-3 text-muted">Tasks</h2>
+              <ol>
                 {exercise.steps.map((step, i) => (
-                  <li key={i} className="grid grid-cols-[2rem_1fr] gap-3 border-b border-rule-soft py-3">
-                    <span className="display tnum text-xl leading-6 text-accent-deep">{i + 1}</span>
-                    <span className="leading-snug [&_code]:bg-ink/[0.07] [&_code]:px-1 [&_code]:font-mono [&_code]:text-[0.88em]">
+                  <li key={i} className="grid grid-cols-[2rem_1fr] gap-3 border-t border-line py-3">
+                    <span className="display tnum text-xl leading-6 text-accent">{i + 1}</span>
+                    <span className="text-[0.92rem] leading-snug text-fg/90">
                       <Markdown content={step} />
                     </span>
                   </li>
@@ -85,9 +85,9 @@ export function BriefPanel({ exercise, number }: { exercise: Exercise; number: n
         {tab === "theory" && exercise.theory && (
           <div className="rise space-y-8">
             <section>
-              <h2 className="display text-xl tracking-tight">{exercise.theory.title}</h2>
+              <h2 className="display text-2xl leading-tight [--display-tracking:-0.012em]">{exercise.theory.title}</h2>
               {exercise.theory.introduction && (
-                <div className="mt-3 leading-relaxed text-ink-2">
+                <div className="mt-3 leading-relaxed text-muted">
                   <Markdown content={exercise.theory.introduction} />
                 </div>
               )}
@@ -98,12 +98,12 @@ export function BriefPanel({ exercise, number }: { exercise: Exercise; number: n
 
             {exercise.theory.examples && exercise.theory.examples.length > 0 && (
               <section>
-                <h3 className="label mb-3 text-ink-2">Examples</h3>
+                <h3 className="label mb-3 text-muted">Examples</h3>
                 <div className="space-y-3">
                   {exercise.theory.examples.map((example, i) => (
                     <pre
                       key={i}
-                      className="overflow-x-auto border border-ink bg-paper-2 p-3 font-mono text-[12px] leading-5"
+                      className="overflow-x-auto rounded-ui border border-line bg-raised-2 p-3 font-mono text-[12px] leading-5"
                     >
                       {example}
                     </pre>
@@ -116,19 +116,19 @@ export function BriefPanel({ exercise, number }: { exercise: Exercise; number: n
 
         {tab === "hints" && (
           <div className="rise space-y-3">
-            <p className="label mb-4 text-ink-2">Try first. Open a hint only when stuck.</p>
+            <p className="label mb-4 text-muted">Try first. Open a hint only when stuck.</p>
             {hints.map((hint, i) => (
-              <details key={i} className="group border border-ink">
-                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 font-semibold leading-tight marker:hidden hover:bg-paper-2 [&::-webkit-details-marker]:hidden">
+              <details key={i} className="group rounded-ui border border-line">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 font-semibold leading-tight marker:hidden hover:bg-raised [&::-webkit-details-marker]:hidden">
                   <span>{hint.question}</span>
-                  <span aria-hidden="true" className="label shrink-0 group-open:hidden">
+                  <span aria-hidden="true" className="label shrink-0 text-accent group-open:hidden">
                     +
                   </span>
-                  <span aria-hidden="true" className="label hidden shrink-0 group-open:inline">
+                  <span aria-hidden="true" className="label hidden shrink-0 text-accent group-open:inline">
                     −
                   </span>
                 </summary>
-                <div className="whitespace-pre-wrap border-t border-ink bg-paper-2 p-3 font-mono text-[12px] leading-5">
+                <div className="whitespace-pre-wrap border-t border-line bg-raised p-3 font-mono text-[12px] leading-5 text-fg/90">
                   {hint.answer}
                 </div>
               </details>
@@ -156,19 +156,16 @@ function PracticeList({
     <section>
       <h3
         className={cn(
-          "label mb-1 border-b-2 pb-2",
-          tone === "ok" ? "border-ok text-ok" : "border-accent text-accent-deep",
+          "label mb-1 border-b pb-2",
+          tone === "ok" ? "border-ok/50 text-ok" : "border-bad/50 text-bad",
         )}
       >
         {title}
       </h3>
       <ul>
         {items.map((item, i) => (
-          <li key={i} className="grid grid-cols-[1.5rem_1fr] gap-2 border-b border-rule-soft py-3 text-sm leading-snug">
-            <span
-              aria-hidden="true"
-              className={cn("font-bold", tone === "ok" ? "text-ok" : "text-accent-deep")}
-            >
+          <li key={i} className="grid grid-cols-[1.5rem_1fr] gap-2 border-b border-line py-3 text-sm leading-snug text-fg/90">
+            <span aria-hidden="true" className={cn("font-bold", tone === "ok" ? "text-ok" : "text-bad")}>
               {mark}
             </span>
             <Markdown content={item} />

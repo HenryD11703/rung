@@ -84,27 +84,27 @@ export function ChecksPanel({ exercise, next, usedSolution, onScore }: Props) {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex h-11 shrink-0 items-center justify-between border-b border-ink px-5">
+      <div className="flex h-11 shrink-0 items-center justify-between border-b border-line px-5">
         <div className="flex items-baseline gap-3">
-          <h2 className="label">{report ? "Checks" : "Requirements"}</h2>
-          <span className="display tnum text-lg leading-none">
+          <h2 className="label text-muted">{report ? "Checks" : "Requirements"}</h2>
+          <span className="display tnum text-2xl leading-none">
             {passed}
-            <span className="text-ink-3">/{total}</span>
+            <span className="text-faint">/{total}</span>
           </span>
         </div>
         <button
           type="button"
           onClick={() => void run()}
           disabled={running}
-          className="on-ink label flex min-h-9 items-center gap-2 bg-ink px-4 text-paper transition-colors hover:bg-accent hover:text-ink focus-visible:bg-accent focus-visible:text-ink disabled:opacity-60"
+          className="label flex min-h-9 items-center gap-2 rounded-ui bg-accent px-4 text-on-accent transition-[filter] hover:brightness-95 disabled:opacity-60"
         >
           {running ? "Running…" : "Run checks"}
-          <kbd className="hidden border border-current px-1 text-[10px] opacity-70 lg:inline">Ctrl ↵</kbd>
+          <kbd className="hidden rounded-[2px] border border-current px-1 text-[10px] opacity-70 lg:inline">Ctrl ↵</kbd>
         </button>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {/* progress, one square per check */}
+        {/* progress, one segment per check */}
         <div className="flex gap-1 px-5 pt-4" aria-hidden="true">
           {exercise.checks.map((check) => {
             const status = statusFor(check.id);
@@ -112,10 +112,10 @@ export function ChecksPanel({ exercise, next, usedSolution, onScore }: Props) {
               <span
                 key={check.id}
                 className={cn(
-                  "h-2 flex-1 transition-colors",
+                  "h-[5px] flex-1 rounded-[2px] transition-colors",
                   status === true && "bg-ok",
-                  status === false && "bg-accent",
-                  status === null && "bg-rule-soft",
+                  status === false && "bg-bad",
+                  status === null && "bg-line-strong/60",
                   stale && "opacity-40",
                 )}
               />
@@ -128,14 +128,14 @@ export function ChecksPanel({ exercise, next, usedSolution, onScore }: Props) {
         </p>
 
         {stale && (
-          <p className="mx-5 mt-3 border-l-2 border-ink pl-3 text-sm text-ink-2">
+          <p className="mx-5 mt-3 border-l-2 border-line-strong pl-3 text-sm text-muted">
             Your code changed since the last run. Run the checks again.
           </p>
         )}
 
         {hasIssues && (
-          <div role="alert" className="mx-5 mt-4 border-l-4 border-accent bg-paper-2 p-3">
-            <p className="label mb-2 text-accent-deep">Syntax error</p>
+          <div role="alert" className="mx-5 mt-4 rounded-ui border-l-4 border-bad bg-raised-2 p-3">
+            <p className="label mb-2 text-bad">Syntax error</p>
             <ul className="space-y-1 font-mono text-[12px]">
               {report!.issues.map((issue, i) => (
                 <li key={i}>
@@ -147,8 +147,8 @@ export function ChecksPanel({ exercise, next, usedSolution, onScore }: Props) {
         )}
 
         {complete && (
-          <div className="on-ink rise mx-5 mt-4 bg-ink p-4 text-paper">
-            <p className="display text-2xl tracking-tight">
+          <div className="rise mx-5 mt-4 rounded-ui bg-accent p-4 text-on-accent">
+            <p className="display text-2xl [--display-tracking:-0.012em]">
               {usedSolution ? "Matches the solution." : "All checks passed."}
             </p>
             {next ? (
@@ -174,30 +174,30 @@ export function ChecksPanel({ exercise, next, usedSolution, onScore }: Props) {
                 key={check.id}
                 data-status={status === null ? "pending" : status ? "pass" : "fail"}
                 className={cn(
-                  "grid grid-cols-[1.75rem_1fr] gap-x-2 border-b border-rule-soft py-3 first:border-t first:border-t-ink",
+                  "grid grid-cols-[1.75rem_1fr] gap-x-2 border-b border-line py-3 first:border-t",
                   stale && "opacity-60",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "mt-0.5 flex size-[18px] items-center justify-center border text-[11px] font-bold leading-none",
-                    status === null && "border-ink",
-                    status === true && "border-ok bg-ok text-paper",
-                    status === false && "border-accent bg-accent text-ink",
+                    "mt-0.5 flex size-[18px] items-center justify-center rounded-[3px] border text-[11px] font-bold leading-none",
+                    status === null && "border-line-strong",
+                    status === true && "border-ok bg-ok text-on-accent",
+                    status === false && "border-bad bg-bad text-on-accent",
                   )}
                 >
                   {status === true ? "✓" : status === false ? "✕" : ""}
                 </span>
                 <div>
-                  <p className="text-sm font-semibold leading-snug">
+                  <p className="text-sm font-medium leading-snug">
                     {check.label}
                     <span className="sr-only">
                       {status === null ? " (not run yet)" : status ? " (passed)" : " (failed)"}
                     </span>
                   </p>
                   {status === false && (
-                    <p className="mt-1 border-l-2 border-accent pl-2 text-sm leading-snug text-ink-2">
+                    <p className="mt-1.5 border-l-2 border-bad pl-2.5 text-sm leading-snug text-muted">
                       {check.hint}
                     </p>
                   )}
