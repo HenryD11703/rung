@@ -208,7 +208,8 @@ export default function RefDemo() {
       "no-state-for-counter",
       "The counter does not use useState",
       "The goal is to store the value without re-rendering. Do not use useState.",
-      (a) => !a.hasCall("useState"),
+      (a) =>
+        a.calls("useRef").some((c) => isLiteral(c.arguments[0], 0)) && !a.hasCall("useState"),
     ),
     staticCheck(
       "increments-current",

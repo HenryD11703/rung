@@ -290,6 +290,7 @@ button { padding: 8px 16px; cursor: pointer; border-radius: 4px; border: 1px sol
       "Navbar and Content receive no props from App",
       "Remove the props. Context makes them unnecessary.",
       (a) =>
+        a.jsx("ThemeProvider", APP).length > 0 &&
         ["Navbar", "Content"].every((name) => {
           const elements = a.jsx(name, APP);
           return (

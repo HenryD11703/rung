@@ -216,6 +216,7 @@ export default function App() {
       "Does not run `return clearInterval(id)` immediately",
       "return clearInterval(id) executes right away. Return a function instead: return () => clearInterval(id).",
       (a) =>
+        intervalEffects(a.calls("useEffect")).length > 0 &&
         !a.has(
           (n) =>
             n.type === "ReturnStatement" &&

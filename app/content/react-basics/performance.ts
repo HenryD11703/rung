@@ -236,7 +236,7 @@ li:hover { background: #f0f0f0; }
       "no-leftover-logs",
       "No console.log left in the final code",
       "Remove the console.log calls you used for debugging.",
-      (a) => !hasConsoleLog(a),
+      (a) => !!a.declaredFunction("ListItem") && !hasConsoleLog(a),
     ),
   ],
 

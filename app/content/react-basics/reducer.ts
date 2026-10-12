@@ -281,18 +281,25 @@ export default function EditorWithMemory() {
       "Return the same state when past (for UNDO) or future (for REDO) is empty.",
       FILE,
       `
-      const s = __freeze(initialState);
-      const u = reducer(s, { type: 'UNDO' });
-      const r = reducer(s, { type: 'REDO' });
-      return u.present === s.present && u.past.length === 0 &&
-        r.present === s.present && r.future.length === 0;
+      let s = __freeze(initialState);
+      s = __freeze(reducer(s, { type: 'SET_TEXT', payload: 'a' }));
+      s = __freeze(reducer(s, { type: 'UNDO' }));
+      const undoAgain = reducer(s, { type: 'UNDO' });
+      s = __freeze(reducer(s, { type: 'REDO' }));
+      const redoAgain = reducer(s, { type: 'REDO' });
+      return undoAgain.present === '' && undoAgain.past.length === 0 &&
+        undoAgain.future.length === 1 && s.present === 'a' &&
+        redoAgain.present === 'a' && redoAgain.future.length === 0;
       `,
     ),
     staticCheck(
       "no-mutating-methods",
       "The reducer never mutates (no push, pop, splice...)",
       "Build new arrays with the spread operator or slice instead of mutating them.",
-      (a) => !usesMutatingMethod(a),
+      (a) =>
+        (a.has((n) => n.type === "SpreadElement") ||
+          ["slice", "filter", "concat"].some((m) => a.hasCall(m))) &&
+        !usesMutatingMethod(a),
     ),
   ],
 

@@ -20,7 +20,7 @@ export const formsExercise: Exercise = {
     "Manage several inputs with one state object and turn plain inputs into controlled components.",
 
   steps: [
-    "Keep a single state called `formData`, an object with `name`, `email` and `role`.",
+    "Give `formData` its initial value: a single object with `name`, `email` and `role`.",
     "Bind the `value` of every field (inputs and the select) to the matching key of `formData`.",
     "Write one generic `handleChange` that uses the input's `name` attribute.",
     "Update the state immutably with the spread operator.",
@@ -81,12 +81,8 @@ const handleChange = (e) => {
     "/App.js": `import React, { useState } from 'react';
 
 export default function RegistrationForm() {
-  // 1. Keep one state object with name, email and role
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    role: 'developer'
-  });
+  // 1. Replace null with one object that holds name, email and role
+  const [formData, setFormData] = useState(null);
 
   const handleChange = (e) => {
     // 2. Implement the generic logic here

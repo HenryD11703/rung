@@ -166,6 +166,8 @@ export default function RobustFetching() {
           .calls("useEffect")
           .some(
             (c) =>
+              isFunction(c.arguments[0]) &&
+              containsCall(c.arguments[0], "fetch") &&
               c.arguments[1]?.type === "ArrayExpression" &&
               c.arguments[1].elements.length === 0,
           ),

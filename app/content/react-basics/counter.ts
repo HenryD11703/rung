@@ -99,7 +99,7 @@ export default function Counter() {
       "no-react-namespace",
       "Calls useState directly, not React.useState",
       "Use the named import instead of React.useState.",
-      (a) => !a.usesNamespaceCall("React", "useState"),
+      (a) => a.hasCall("useState") && !a.usesNamespaceCall("React", "useState"),
     ),
     staticCheck(
       "state-starts-at-zero",
@@ -138,6 +138,7 @@ export default function Counter() {
       "Never mutates the state variable",
       "Do not use count++ or count = count + 1. Call the setter.",
       (a) =>
+        a.stateHooks().length > 0 &&
         !a.stateHooks().some((h) =>
           a.has(
             (n) =>

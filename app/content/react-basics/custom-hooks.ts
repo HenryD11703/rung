@@ -186,7 +186,10 @@ export function useFetch(url) {
       "app-is-clean",
       "App.js has no useEffect or fetch",
       "App.js still knows too much. Move useEffect and fetch into hooks/useFetch.js.",
-      (a) => a.hasFile(APP) && !a.hasCall("useEffect", APP) && !a.hasCall("fetch", APP),
+      (a) =>
+        a.calls("useFetch", APP).length > 0 &&
+        !a.hasCall("useEffect", APP) &&
+        !a.hasCall("fetch", APP),
     ),
     staticCheck(
       "app-uses-hook",
@@ -198,7 +201,10 @@ export function useFetch(url) {
       "hook-takes-url",
       "The hook receives the URL as a parameter",
       "Change the signature to useFetch(url) and use it in the fetch.",
-      (a) => (a.declaredFunction("useFetch", HOOK)?.params.length ?? 0) >= 1,
+      (a) => {
+        const fn = a.declaredFunction("useFetch", HOOK);
+        return !!fn && fn.params.length >= 1 && mentions(fn.body, fn.params[0].name);
+      },
     ),
     staticCheck(
       "hook-has-state",
@@ -258,7 +264,7 @@ export function useFetch(url) {
       "No hardcoded URL inside the hook",
       "The URL belongs to the caller. Use the parameter instead.",
       (a) =>
-        a.hasFile(HOOK) &&
+        a.hasCall("fetch", HOOK) &&
         !a.has(
           (n) =>
             n.type === "Literal" &&

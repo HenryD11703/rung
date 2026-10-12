@@ -232,6 +232,8 @@ function DisplayComponent({ text }) {
       "Does not read the DOM directly",
       "Do not use document.getElementById or querySelector. Share data through state and props.",
       (a) =>
+        !!a.declaredFunction("App") &&
+        containsCall(a.declaredFunction("App")!, "useState") &&
         !a.hasCall("getElementById") &&
         !a.hasCall("querySelector") &&
         !a.hasCall("querySelectorAll"),

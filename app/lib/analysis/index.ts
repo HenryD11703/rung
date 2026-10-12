@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- AST nodes are dynamically shaped */
 import {
   type AstNode,
   type ParsedFile,

@@ -1,6 +1,7 @@
 import type { Exercise } from "@/types";
 import {
   type AstNode,
+  type CodeAnalysis,
   hasNode,
   isIdentifier,
   isLiteral,
@@ -10,6 +11,14 @@ import {
 import { staticCheck } from "../predicates";
 
 const STATUSES = ["success", "error", "loading"];
+
+const hasConfig = (a: CodeAnalysis) =>
+  a
+    .find((n) => n.type === "ObjectExpression")
+    .some((obj) => {
+      const keys = (obj.properties as AstNode[]).map(keyName);
+      return STATUSES.every((s) => keys.includes(s));
+    });
 
 export const trafficLightExercise: Exercise = {
   slug: "conditional-rendering",
@@ -157,13 +166,7 @@ export default function TrafficLight() {
       "config-object",
       "Defines a config object with success, error and loading",
       "Create an object with the keys success, error and loading, each with color, icon and text.",
-      (a) =>
-        a
-          .find((n) => n.type === "ObjectExpression")
-          .some((obj) => {
-            const keys = (obj.properties as AstNode[]).map(keyName);
-            return STATUSES.every((s) => keys.includes(s));
-          }),
+      hasConfig,
     ),
     staticCheck(
       "lookup-by-status",
@@ -182,6 +185,7 @@ export default function TrafficLight() {
       "No switch, if/else chains or nested ternaries",
       "Let the lookup object do the work instead of chaining conditions.",
       (a) =>
+        hasConfig(a) &&
         !a.has(
           (n) =>
             n.type === "SwitchStatement" ||

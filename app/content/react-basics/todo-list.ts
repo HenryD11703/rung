@@ -210,7 +210,8 @@ export default function TodoList() {
       "no-mutation",
       "Does not mutate the array (no push, splice, pop...)",
       "Never call push, pop, splice, shift, unshift, sort or reverse on state.",
-      (a) => !usesMutatingMethod(a),
+      (a) =>
+        a.stateHooks().some((h) => a.hasCall(h.setter)) && !usesMutatingMethod(a),
     ),
   ],
 

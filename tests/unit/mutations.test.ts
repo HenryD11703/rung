@@ -310,6 +310,7 @@ const mutations: Mutation[] = [
       "undo-moves-present-to-future",
       "redo-restores",
       "new-change-clears-future",
+      "empty-history-is-safe",
       "no-mutating-methods",
     ],
   },
@@ -317,7 +318,7 @@ const mutations: Mutation[] = [
     slug: "usereducer-undo-redo",
     name: "UNDO forgets to queue the present in future",
     apply: (s) => swap(s, "App.js", "future: [present, ...future]", "future"),
-    fails: ["undo-moves-present-to-future", "redo-restores"],
+    fails: ["undo-moves-present-to-future", "redo-restores", "empty-history-is-safe"],
   },
   {
     slug: "usereducer-undo-redo",
