@@ -1,44 +1,65 @@
-import { Exercise } from "@/types";
-import { contadorExercise } from "@/content/react-basics/01-contador";
-import { todoListExercise } from "@/content/react-basics/02-todo-list";
-import { semaforoExercise } from "@/content/react-basics/03-semaforo";
-import { cronometroFantasmaExercise } from "@/content/react-basics/04-cronometro-fantasma";
-import { fetchingRobustoExercise } from "@/content/react-basics/05-fetching";
-import { customHookExercise } from "@/content/react-basics/06-custom-hooks";
-import { themeContextExercise } from "@/content/react-basics/07-theme-switcher";
-import { performanceListExercise } from "@/content/react-basics/09-performance";
-import { controlledFormsExercise } from "@/content/react-basics/08-forms";
-import { useRefExercise } from "@/content/react-basics/10-escapeDOM";
-import { useReducerUndoExercise } from "@/content/react-basics/11-reducer";
-import { liftingStateExercise } from "@/content/react-basics/12-lifting";
+import type { Difficulty, Exercise } from "@/types";
+import { counterExercise } from "@/content/react-basics/counter";
+import { todoListExercise } from "@/content/react-basics/todo-list";
+import { trafficLightExercise } from "@/content/react-basics/traffic-light";
+import { liftingStateExercise } from "@/content/react-basics/lifting-state";
+import { ghostTimerExercise } from "@/content/react-basics/ghost-timer";
+import { fetchingExercise } from "@/content/react-basics/fetching";
+import { customHooksExercise } from "@/content/react-basics/custom-hooks";
+import { themeContextExercise } from "@/content/react-basics/theme-context";
+import { formsExercise } from "@/content/react-basics/forms";
+import { refsExercise } from "@/content/react-basics/refs";
+import { performanceExercise } from "@/content/react-basics/performance";
+import { reducerExercise } from "@/content/react-basics/reducer";
 
-const exercises: Exercise[] = [
+/** The order here is the order of the curriculum. */
+export const exercises: Exercise[] = [
   // Easy
-  contadorExercise,
+  counterExercise,
   todoListExercise,
-  semaforoExercise,
+  trafficLightExercise,
   liftingStateExercise,
   // Medium
-  cronometroFantasmaExercise,
-  fetchingRobustoExercise,
-  customHookExercise,
+  ghostTimerExercise,
+  fetchingExercise,
+  customHooksExercise,
   themeContextExercise,
-  controlledFormsExercise,
-  useRefExercise,
+  formsExercise,
+  refsExercise,
   // Hard
-  performanceListExercise,
-  useReducerUndoExercise,
+  performanceExercise,
+  reducerExercise,
 ];
+
+export interface ExerciseSummary {
+  slug: string;
+  title: string;
+  difficulty: Difficulty;
+  estimatedTime: number;
+  tags: string[];
+  /** 1-based position in the curriculum. */
+  number: number;
+}
 
 export function getExerciseBySlug(slug: string): Exercise | undefined {
   return exercises.find((ex) => ex.slug === slug);
 }
 
-export function getAllExercises() {
-  return exercises.map((ex) => ({
+export function getAllExercises(): ExerciseSummary[] {
+  return exercises.map((ex, index) => ({
     slug: ex.slug,
     title: ex.title,
     difficulty: ex.difficulty,
-    completed: false,
+    estimatedTime: ex.estimatedTime ?? 0,
+    tags: ex.tags ?? [],
+    number: index + 1,
   }));
+}
+
+export function getNeighbours(slug: string) {
+  const index = exercises.findIndex((ex) => ex.slug === slug);
+  return {
+    previous: index > 0 ? exercises[index - 1] : undefined,
+    next: index >= 0 && index < exercises.length - 1 ? exercises[index + 1] : undefined,
+  };
 }
