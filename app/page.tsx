@@ -56,7 +56,7 @@ export default function Home() {
           <div className="mx-auto grid max-w-[1400px] gap-10 px-5 pb-12 pt-10 md:px-8 lg:grid-cols-12 lg:pb-16 lg:pt-14">
             <div className="lg:col-span-8">
               <p className="label mb-6 flex items-center gap-3 text-ink-2">
-                <BrandMark className="size-4" />
+                <BrandMark className="size-4 text-ink" />
                 React practice · 2026 edition
               </p>
 

@@ -36,7 +36,8 @@ export default function Workspace({ slug }: { slug: string }) {
 
   const paneClass = (id: PaneId) =>
     cn(
-      "absolute inset-0 min-h-0 min-w-0 bg-paper lg:static lg:inset-auto",
+      // overflow-hidden: Sandpack paints unwrapped code for a frame before the editor takes over.
+      "absolute inset-0 min-h-0 min-w-0 overflow-hidden bg-paper lg:static lg:inset-auto",
       pane !== id && "invisible lg:visible",
     );
 
